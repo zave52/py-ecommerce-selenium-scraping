@@ -103,14 +103,8 @@ def get_single_page_products(webdriver: WebDriver) -> list[Product]:
             pbar.update(len(product_elements) - len(products))
             products = product_elements
 
-            try:
-                button_more = webdriver.find_element(
-                    By.CLASS_NAME,
-                    "ecomerce-items-scroll-more"
-                )
-                time.sleep(0.5)
-            except NoSuchElementException:
-                break
+            time.sleep(0.5)
+
     except NoSuchElementException:
         pass
 
