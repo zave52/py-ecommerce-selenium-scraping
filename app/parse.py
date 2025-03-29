@@ -13,17 +13,17 @@ HOME_URL = urljoin(BASE_URL, "test-sites/e-commerce/more/")
 COMPUTER_URL = urljoin(HOME_URL, "computers/")
 PHONE_URL = urljoin(HOME_URL, "phones/")
 
-LAPTOP_URL = urljoin(COMPUTER_URL, "laptops/")
-TABLET_URL = urljoin(COMPUTER_URL, "tablets/")
+LAPTOP_URL = urljoin(COMPUTER_URL, "laptops")
+TABLET_URL = urljoin(COMPUTER_URL, "tablets")
 
-TOUCH_URL = urljoin(PHONE_URL, "touch/")
+TOUCH_URL = urljoin(PHONE_URL, "touch")
 
 URLS_TO_SCRAPE = {
     HOME_URL: "home.csv",
     COMPUTER_URL: "computers.csv",
-    PHONE_URL: "laptops.csv",
-    LAPTOP_URL: "tablets.csv",
-    TABLET_URL: "phones.csv",
+    PHONE_URL: "phones.csv",
+    LAPTOP_URL: "laptops.csv",
+    TABLET_URL: "tablets.csv",
     TOUCH_URL: "touch.csv"
 }
 
