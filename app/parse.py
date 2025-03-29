@@ -45,18 +45,20 @@ PRODUCT_FIELDS = [field.name for field in fields(Product)]
 
 def parse_single_product(product: WebElement) -> Product:
     return Product(
-        title=product.find_element(By.CLASS_NAME, "title").text,
+        title=product.find_element(
+            By.CLASS_NAME, "title"
+        ).get_attribute("title"),
         description=product.find_element(By.CLASS_NAME, "description").text,
         price=float(
             product.find_element(By.CLASS_NAME, "price")
             .text.replace("$", "")
         ),
-        rating=int(
+        rating=len(
+            product.find_elements(By.CLASS_NAME, "ws-icon-star")
+        ),
+        num_of_reviews=int(
             product.find_element(By.CLASS_NAME, "review-count")
             .text.split()[0]
-        ),
-        num_of_reviews=len(
-            product.find_elements(By.CLASS_NAME, "ws-icon-star")
         )
     )
 
