@@ -2,6 +2,7 @@ import csv
 from dataclasses import dataclass, fields, astuple
 from urllib.parse import urljoin
 
+from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
@@ -17,14 +18,14 @@ TABLET_URL = urljoin(COMPUTER_URL, "tablets/")
 
 TOUCH_URL = urljoin(PHONE_URL, "touch/")
 
-URLS_TO_SCRAPE = [
-    HOME_URL,
-    COMPUTER_URL,
-    PHONE_URL,
-    LAPTOP_URL,
-    TABLET_URL,
-    TOUCH_URL
-]
+URLS_TO_SCRAPE = {
+    HOME_URL: "home.csv",
+    COMPUTER_URL: "computers.csv",
+    PHONE_URL: "laptops.csv",
+    LAPTOP_URL: "tablets.csv",
+    TABLET_URL: "phones.csv",
+    TOUCH_URL: "touch.csv"
+}
 
 
 @dataclass
