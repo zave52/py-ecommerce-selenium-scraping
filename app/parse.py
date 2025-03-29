@@ -8,6 +8,23 @@ from selenium.webdriver.remote.webelement import WebElement
 BASE_URL = "https://webscraper.io/"
 HOME_URL = urljoin(BASE_URL, "test-sites/e-commerce/more/")
 
+COMPUTER_URL = urljoin(HOME_URL, "computers/")
+PHONE_URL = urljoin(HOME_URL, "phones/")
+
+LAPTOP_URL = urljoin(COMPUTER_URL, "laptops/")
+TABLET_URL = urljoin(COMPUTER_URL, "tablets/")
+
+TOUCH_URL = urljoin(PHONE_URL, "touch/")
+
+URLS_TO_SCRAPE = [
+    HOME_URL,
+    COMPUTER_URL,
+    PHONE_URL,
+    LAPTOP_URL,
+    TABLET_URL,
+    TOUCH_URL
+]
+
 
 @dataclass
 class Product:
