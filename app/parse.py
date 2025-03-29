@@ -3,6 +3,7 @@ import csv
 from dataclasses import dataclass, fields, astuple
 from urllib.parse import urljoin
 
+from tqdm import tqdm
 from selenium.common import NoSuchElementException
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
@@ -87,6 +88,7 @@ def get_single_page_products(webdriver: WebDriver) -> list[Product]:
             "ecomerce-items-scroll-more"
         )
 
+        pbar = tqdm(desc="Loading more products", unit="batch")
         while button_more.is_displayed():
             button_more.click()
 
@@ -98,6 +100,7 @@ def get_single_page_products(webdriver: WebDriver) -> list[Product]:
             if len(product_elements) <= len(products):
                 break
 
+            pbar.update(len(product_elements) - len(products))
             products = product_elements
 
             try:
@@ -120,8 +123,11 @@ def get_all_products() -> None:
 
     webdriver = Firefox(options=options)
 
-    for url, output_path in URLS_TO_SCRAPE.items():
+    for url, output_path in tqdm(
+        URLS_TO_SCRAPE.items(), desc="Scraping pages", unit="page"
+    ):
         webdriver.get(url)
+        print(f"\nProcessing: {url} -> {output_path}")
 
         products = get_single_page_products(webdriver)
         write_products_to_csv(output_path, products)
