@@ -91,7 +91,15 @@ def get_single_url_products(webdriver: WebDriver) -> list[Product]:
 
 
 def get_all_products() -> None:
-    pass
+    webdriver = Firefox()
+
+    for url, output_path in URLS_TO_SCRAPE.items():
+        webdriver.get(url)
+
+        products = get_single_url_products(webdriver)
+        write_products_to_csv(output_path, products)
+
+    webdriver.close()
 
 
 if __name__ == "__main__":
