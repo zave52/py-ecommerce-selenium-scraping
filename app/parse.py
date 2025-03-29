@@ -7,6 +7,7 @@ from selenium.common import NoSuchElementException
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.webdriver import WebDriver
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 
 BASE_URL = "https://webscraper.io/"
@@ -68,6 +69,7 @@ def write_products_to_csv(csv_path: str, products: list[Product]) -> None:
 
 
 def get_single_page_products(webdriver: WebDriver) -> list[Product]:
+    time.sleep(0.5)
     try:
         cookie_button = webdriver.find_element(By.CLASS_NAME, "acceptCookies")
         cookie_button.click()
@@ -101,6 +103,7 @@ def get_single_page_products(webdriver: WebDriver) -> list[Product]:
                     By.CLASS_NAME,
                     "ecomerce-items-scroll-more"
                 )
+                time.sleep(0.5)
             except NoSuchElementException:
                 break
     except NoSuchElementException:
@@ -110,7 +113,10 @@ def get_single_page_products(webdriver: WebDriver) -> list[Product]:
 
 
 def get_all_products() -> None:
-    webdriver = Firefox()
+    options = Options()
+    options.add_argument("--headless")
+
+    webdriver = Firefox(options=options)
 
     for url, output_path in URLS_TO_SCRAPE.items():
         webdriver.get(url)
