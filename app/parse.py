@@ -1,7 +1,9 @@
+import time
 import csv
 from dataclasses import dataclass, fields, astuple
 from urllib.parse import urljoin
 
+from selenium.common import NoSuchElementException
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.webdriver import WebDriver
@@ -65,29 +67,46 @@ def write_products_to_csv(csv_path: str, products: list[Product]) -> None:
         writer.writerows([astuple(product) for product in products])
 
 
-def get_single_url_products(webdriver: WebDriver) -> list[Product]:
+def get_single_page_products(webdriver: WebDriver) -> list[Product]:
+    try:
+        cookie_button = webdriver.find_element(By.CLASS_NAME, "acceptCookies")
+        cookie_button.click()
+    except NoSuchElementException:
+        pass
+
     product_elements = webdriver.find_elements(By.CLASS_NAME, "card-body")
-    products = [parse_single_product(product) for product in product_elements]
+    products = product_elements
 
-    button_more = webdriver.find_element(
-        By.CLASS_NAME,
-        "ecomerce-items-scroll-more"
-    )
-
-    while button_more:
-        button_more.click()
-
-        product_elements = webdriver.find_elements(By.CLASS_NAME, )
-        products.extend(
-            [parse_single_product(product) for product in product_elements]
-        )
-
+    try:
         button_more = webdriver.find_element(
             By.CLASS_NAME,
             "ecomerce-items-scroll-more"
         )
 
-    return products
+        while button_more.is_displayed():
+            button_more.click()
+
+            product_elements = webdriver.find_elements(
+                By.CLASS_NAME,
+                "card-body"
+            )
+
+            if len(product_elements) <= len(products):
+                break
+
+            products = product_elements
+
+            try:
+                button_more = webdriver.find_element(
+                    By.CLASS_NAME,
+                    "ecomerce-items-scroll-more"
+                )
+            except NoSuchElementException:
+                break
+    except NoSuchElementException:
+        pass
+
+    return [parse_single_product(product) for product in products]
 
 
 def get_all_products() -> None:
@@ -96,7 +115,7 @@ def get_all_products() -> None:
     for url, output_path in URLS_TO_SCRAPE.items():
         webdriver.get(url)
 
-        products = get_single_url_products(webdriver)
+        products = get_single_page_products(webdriver)
         write_products_to_csv(output_path, products)
 
     webdriver.close()
