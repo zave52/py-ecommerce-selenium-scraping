@@ -3,6 +3,7 @@ from dataclasses import dataclass, fields, astuple
 from urllib.parse import urljoin
 
 from selenium.webdriver.common.by import By
+from selenium.webdriver.firefox.webdriver import WebDriver
 from selenium.webdriver.remote.webelement import WebElement
 
 BASE_URL = "https://webscraper.io/"
@@ -61,6 +62,31 @@ def write_products_to_csv(csv_path: str, products: list[Product]) -> None:
         writer = csv.writer(f)
         writer.writerow(PRODUCT_FIELDS)
         writer.writerows([astuple(product) for product in products])
+
+
+def get_single_url_products(webdriver: WebDriver) -> list[Product]:
+    product_elements = webdriver.find_elements(By.CLASS_NAME, "card-body")
+    products = [parse_single_product(product) for product in product_elements]
+
+    button_more = webdriver.find_element(
+        By.CLASS_NAME,
+        "ecomerce-items-scroll-more"
+    )
+
+    while button_more:
+        button_more.click()
+
+        product_elements = webdriver.find_elements(By.CLASS_NAME, )
+        products.extend(
+            [parse_single_product(product) for product in product_elements]
+        )
+
+        button_more = webdriver.find_element(
+            By.CLASS_NAME,
+            "ecomerce-items-scroll-more"
+        )
+
+    return products
 
 
 def get_all_products() -> None:
